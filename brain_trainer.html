@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Тренажер для мозга</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            purple: '#8B5CF6',
+                            pink: '#EC4899',
+                            cyan: '#06B6D4',
+                            yellow: '#F59E0B',
+                            green: '#10B981',
+                            dark: '#0F172A',
+                            card: '#1E293B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+            background-color: #0B0F19;
+            color: #F3F4F6;
+        }
+
+        /* Bouncy Button Effect */
+        .btn-bounce {
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease;
+        }
+        .btn-bounce:active {
+            transform: scale(0.92);
+        }
+
+        /* Smooth Glassmorphism */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8B5CF6;
+            border-radius: 4px;
+        }
+
+        /* Flip Card Styles */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Pulse FX */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        .glow-effect {
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-purple-500 selection:text-white">
+
+    <!-- Header / Navigation Bar -->
+    <header class="w-full max-w-md mx-auto p-4 flex justify-between items-center z-20">
+        <div id="homeBtn" class="flex items-center gap-2 cursor-pointer btn-bounce" onclick="showMainMenu()">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                <i class="fa-solid fa-brain text-white text-xl"></i>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-lg leading-none bg-gradient-to-r from-purple-400 via-pink-400 to-amber-300 bg-clip-text text-transparent">ПРОКАЧКА</h1>
+                <span class="text-[10px] text-gray-400 font-semibold tracking-wider">МОЗГА</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <!-- Audio Toggle Button -->
+            <button id="soundBtn" onclick="toggleSound()" class="w-10 h-10 rounded-2xl glass-card flex items-center justify-center text-yellow-400 btn-bounce shadow-md">
+                <i id="soundIcon" class="fa-solid fa-volume-high"></i>
+            </button>
+            <!-- APK Guide Info Button -->
+            <button onclick="openModal('apkModal')" class="w-10 h-10 rounded-2xl glass-card flex items-center justify-center text-cyan-400 btn-bounce shadow-md">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-md mx-auto px-4 flex-1 flex flex-col justify-center relative pb-6">
+
+        <!-- MAIN MENU -->
+        <div id="mainMenu" class="space-y-4 my-auto">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-black text-white tracking-wide">ВЫБЕРИТЕ ТРЕНИРОВКУ</h2>
+                <p class="text-xs text-gray-400 mt-1">Улучшайте скорость, память и внимание каждый день</p>
+            </div>
+
+            <!-- Mini Games Grid -->
+            <div class="grid grid-cols-2 gap-3.5">
+                <!-- 1. Скорость реакции -->
+                <div onclick="startGame('reaction')" class="glass-card p-4 rounded-3xl flex flex-col items-center text-center cursor-pointer btn-bounce border-t-2 border-green-500/40 hover:border-green-400 shadow-lg">
+                    <div class="w-12 h-12 rounded-2xl bg-green-500/20 text-green-400 flex items-center justify-center mb-2">
+                        <i class="fa-solid fa-bolt text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-gray-100">Реакция</h3>
+                    <p class="text-[10px] text-gray-400 mt-0.5">Лови цвет</p>
+                    <div class="mt-2 text-[11px] font-semibold text-green-400 bg-green-950/60 px-2.5 py-0.5 rounded-full border border-green-800/50" id="best-reaction">
+                        Рекорд: -
+                    </div>
+                </div>
+
+                <!-- 2. Последовательность -->
+                <div onclick="startGame('simon')" class="glass-card p-4 rounded-3xl flex flex-col items-center text-center cursor-pointer btn-bounce border-t-2 border-purple-500/40 hover:border-purple-400 shadow-lg">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center mb-2">
+                        <i class="fa-solid fa-cubes text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-gray-100">Запоминание</h3>
+                    <p class="text-[10px] text-gray-400 mt-0.5">Повтори цвета</p>
+                    <div class="mt-2 text-[11px] font-semibold text-purple-400 bg-purple-950/60 px-2.5 py-0.5 rounded-full border border-purple-800/50" id="best-simon">
+                        Рекорд: 0
+                    </div>
+                </div>
+
+                <!-- 3. Парные карточки -->
+                <div onclick="startGame('match')" class="glass-card p-4 rounded-3xl flex flex-col items-center text-center cursor-pointer btn-bounce border-t-2 border-pink-500/40 hover:border-pink-400 shadow-lg">
+                    <div class="w-12 h-12 rounded-2xl bg-pink-500/20 text-pink-400 flex items-center justify-center mb-2">
+                        <i class="fa-solid fa-clone text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-gray-100">Парные карты</h3>
+                    <p class="text-[10px] text-gray-400 mt-0.5">Найди пары</p>
+                    <div class="mt-2 text-[11px] font-semibold text-pink-400 bg-pink-950/60 px-2.5 py-0.5 rounded-full border border-pink-800/50" id="best-match">
+                        Рекорд: -
+                    </div>
+                </div>
+
+                <!-- 4. Быстрая математика -->
+                <div onclick="startGame('math')" class="glass-card p-4 rounded-3xl flex flex-col items-center text-center cursor-pointer btn-bounce border-t-2 border-amber-500/40 hover:border-amber-400 shadow-lg">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-2">
+                        <i class="fa-solid fa-calculator text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-gray-100">Математика</h3>
+                    <p class="text-[10px] text-gray-400 mt-0.5">Реши примеры</p>
+                    <div class="mt-2 text-[11px] font-semibold text-amber-400 bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-amber-800/50" id="best-math">
+                        Рекорд: 0
+                    </div>
+                </div>
+
+                <!-- 5. Таблица Шульте -->
+                <div onclick="startGame('schulte')" class="glass-card p-4 rounded-3xl flex flex-col items-center text-center cursor-pointer btn-bounce border-t-2 border-cyan-500/40 hover:border-cyan-400 shadow-lg">
+                    <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-2">
+                        <i class="fa-solid fa-table-cells text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-gray-100">Шульте 5x5</h3>
+                    <p class="text-[10px] text-gray-400 mt-0.5">Числа по порядку</p>
+                    <div class="mt-2 text-[11px] font-semibold text-cyan-400 bg-cyan-950/60 px-2.5 py-0.5 rounded-full border border-cyan-800/50" id="best-schulte">
+                        Рекорд: -
+                    </div>
+                </div>
+
+                <!-- 6. Запоминание слов -->
+                <div onclick="startGame('words')" class="glass-card p-4 rounded-3xl flex flex-col items-center text-center cursor-pointer btn-bounce border-t-2 border-indigo-500/40 hover:border-indigo-400 shadow-lg">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-2">
+                        <i class="fa-solid fa-font text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-gray-100">Запоминание слов</h3>
+                    <p class="text-[10px] text-gray-400 mt-0.5">Вспомни слова</p>
+                    <div class="mt-2 text-[11px] font-semibold text-indigo-400 bg-indigo-950/60 px-2.5 py-0.5 rounded-full border border-indigo-800/50" id="best-words">
+                        Рекорд: 0
+                    </div>
+                </div>
+            </div>
+
+            <!-- APK Convert Action Banner -->
+            <div onclick="openModal('apkModal')" class="mt-4 p-3.5 glass-card rounded-2xl flex items-center justify-between border border-cyan-500/30 cursor-pointer btn-bounce bg-gradient-to-r from-cyan-950/40 to-purple-950/40">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                        <i class="fa-brands fa-android text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-white">Как сохранить как APK?</div>
+                        <div class="text-[10px] text-gray-400">Инструкция по установке на Android</div>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-400 text-xs mr-1"></i>
+            </div>
+        </div>
+
+        <!-- GAME CONTAINER (Hidden by default) -->
+        <div id="gameScreen" class="hidden flex-1 flex flex-col">
+            <!-- Top Controls inside Game -->
+            <div class="flex justify-between items-center mb-4 glass-card p-3 rounded-2xl">
+                <button onclick="showMainMenu()" class="text-xs font-bold text-gray-300 flex items-center gap-1.5 btn-bounce px-2 py-1 bg-slate-800 rounded-lg">
+                    <i class="fa-solid fa-arrow-left"></i> В меню
+                </button>
+                <span id="gameTitle" class="text-sm font-extrabold text-white">Название игры</span>
+                <button onclick="showGameInstructions()" class="text-xs font-bold text-amber-400 flex items-center gap-1 btn-bounce px-2 py-1 bg-amber-950/40 rounded-lg border border-amber-800/50">
+                    <i class="fa-solid fa-circle-question"></i>
+                </button>
+            </div>
+
+            <!-- Dynamic Viewport for Mini Games -->
+            <div id="gameContainer" class="flex-1 flex flex-col justify-center items-center relative">
+                <!-- Content injected dynamically -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-2 text-[10px] text-gray-500 z-10">
+        Тренажер для мозга &bull; Готово для Android APK
+    </footer>
+
+    <!-- INSTRUCTIONS MODAL -->
+    <div id="instructionsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="glass-card max-w-sm w-full p-6 rounded-3xl border border-purple-500/30 text-center space-y-4">
+            <div class="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-2xl flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-lightbulb"></i>
+            </div>
+            <h3 id="instModalTitle" class="text-xl font-bold text-white">Как играть</h3>
+            <p id="instModalText" class="text-xs text-gray-300 leading-relaxed">Правила игры...</p>
+            <button onclick="closeModal('instructionsModal')" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-2xl btn-bounce shadow-lg text-sm">
+                Понятно, начать!
+            </button>
+        </div>
+    </div>
+
+    <!-- APK CONVERSION GUIDE MODAL -->
+    <div id="apkModal" class="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
+        <div class="glass-card max-w-sm w-full p-6 rounded-3xl border border-cyan-500/40 text-left space-y-4 max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gray-700/60 pb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-brands fa-android text-cyan-400 text-xl"></i>
+                    <h3 class="text-lg font-extrabold text-white">Инструкция APK</h3>
+                </div>
+                <button onclick="closeModal('apkModal')" class="text-gray-400 text-sm hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-gray-300">Вы можете превратить эту веб-игру в полноценное **APK приложение для Android** двумя простыми способами:</p>
+
+            <div class="space-y-3 text-xs">
+                <div class="p-3 bg-slate-800/80 rounded-2xl border border-slate-700">
+                    <div class="font-bold text-cyan-300 mb-1">Способ 1: Без сборки (PWA)</div>
+                    <ol class="list-decimal list-inside text-gray-300 space-y-1">
+                        <li>Откройте эту страницу в Chrome на Android.</li>
+                        <li>Нажмите меню браузера (3 точки).</li>
+                        <li>Выберите <b>«Добавить на гл. экран»</b> или <b>«Установить приложение»</b>.</li>
+                    </ol>
+                </div>
+
+                <div class="p-3 bg-slate-800/80 rounded-2xl border border-slate-700">
+                    <div class="font-bold text-purple-300 mb-1">Способ 2: Создать настоящий APK</div>
+                    <ol class="list-decimal list-inside text-gray-300 space-y-1">
+                        <li>Загрузите этот HTML файл на бесплатный хостинг (например, Vercel, Netlify или GitHub Pages).</li>
+                        <li>Перейдите на сайт <b>WebIntoApp.com</b> или <b>PWABuilder.com</b>.</li>
+                        <li>Вставьте ссылку на ваш сайт.</li>
+                        <li>Скачайте сгенерированный **.APK** файл и установите его на Android!</li>
+                    </ol>
+                </div>
+            </div>
+
+            <button onclick="closeModal('apkModal')" class="w-full py-3 bg-cyan-600 text-white font-bold rounded-2xl btn-bounce text-sm shadow-lg shadow-cyan-600/30">
+                Закрыть
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* ==================== GLOBAL APP STATE ==================== */
+        let currentGame = null;
+        let isSoundMuted = false;
+        let audioCtx = null;
+
+        // Best scores stored in localStorage
+        const scores = {
+            reaction: localStorage.getItem('brain_reaction') ? parseInt(localStorage.getItem('brain_reaction')) : null, // ms (lower is better)
+            simon: parseInt(localStorage.getItem('brain_simon')) || 0,
+            match: localStorage.getItem('brain_match') ? parseInt(localStorage.getItem('brain_match')) : null, // seconds
+            math: parseInt(localStorage.getItem('brain_math')) || 0,
+            schulte: localStorage.getItem('brain_schulte') ? parseFloat(localStorage.getItem('brain_schulte')) : null, // seconds
+            words: parseInt(localStorage.getItem('brain_words')) || 0
+        };
+
+        // Initialize display scores on startup
+        updateScoreDisplays();
+
+        /* ==================== WEB AUDIO SYNTHESIZER ==================== */
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSound(type) {
+            if (isSoundMuted) return;
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+
+                if (type === 'correct') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.15); // E5
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                } else if (type === 'wrong') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(200, now);
+                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } else if (type === 'beep') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'win') {
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+                        gain.gain.setValueAtTime(0.2, now + idx * 0.1);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.1 + 0.2);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.1);
+                        osc.stop(now + idx * 0.1 + 0.2);
+                    });
+                }
+            } catch (e) {
+                console.error("Audio playback error:", e);
+            }
+        }
+
+        function toggleSound() {
+            isSoundMuted = !isSoundMuted;
+            const soundIcon = document.getElementById('soundIcon');
+            if (isSoundMuted) {
+                soundIcon.className = 'fa-solid fa-volume-xmark text-gray-500';
+            } else {
+                soundIcon.className = 'fa-solid fa-volume-high text-yellow-400';
+                playSound('beep');
+            }
+        }
+
+        /* ==================== NAVIGATION LOGIC ==================== */
+        function showMainMenu() {
+            if (activeTimer) clearInterval(activeTimer);
+            if (reactionTimeout) clearTimeout(reactionTimeout);
+            
+            document.getElementById('mainMenu').classList.remove('hidden');
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('gameContainer').innerHTML = '';
+            currentGame = null;
+            updateScoreDisplays();
+        }
+
+        function updateScoreDisplays() {
+            document.getElementById('best-reaction').innerText = scores.reaction ? `Рекорд: ${scores.reaction}мс` : 'Рекорд: -';
+            document.getElementById('best-simon').innerText = `Рекорд: ${scores.simon}`;
+            document.getElementById('best-match').innerText = scores.match ? `Рекорд: ${scores.match}сек` : 'Рекорд: -';
+            document.getElementById('best-math').innerText = `Рекорд: ${scores.math}`;
+            document.getElementById('best-schulte').innerText = scores.schulte ? `Рекорд: ${scores.schulte}сек` : 'Рекорд: -';
+            document.getElementById('best-words').innerText = `Рекорд: ${scores.words}`;
+        }
+
+        function openModal(id) {
+            initAudio();
+            playSound('beep');
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        const gameRules = {
+            reaction: "Нажмите на экран как можно быстрее, когда красный цвет сменится на ЗЕЛЕНЫЙ. Не нажимайте раньше времени!",
+            simon: "Запомните и в точности повторите последовательность загорающихся цветных кнопок.",
+            match: "Открывайте карточки и находите одинаковые пары. Откройте все карточки за наименьшее время!",
+            math: "Решайте математические примеры за отведенное время. На выбор дается 4 варианта ответа.",
+            schulte: "Нажимайте на числа от 1 до 25 строго по порядку как можно быстрее. Полезно для фокусировки!",
+            words: "Запомните представленный список слов за 7 секунд, а затем выберите только правильные слова из предложенных."
+        };
+
+        const gameTitles = {
+            reaction: "Скорость реакции",
+            simon: "Последовательность",
+            match: "Парные карты",
+            math: "Быстрая математика",
+            schulte: "Таблица Шульте 5x5",
+            words: "Запоминание слов"
+        };
+
+        function startGame(gameKey) {
+            initAudio();
+            currentGame = gameKey;
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('gameTitle').innerText = gameTitles[gameKey];
+
+            const container = document.getElementById('gameContainer');
+            container.innerHTML = '';
+
+            switch (gameKey) {
+                case 'reaction': initReactionGame(container); break;
+                case 'simon': initSimonGame(container); break;
+                case 'match': initMatchGame(container); break;
+                case 'math': initMathGame(container); break;
+                case 'schulte': initSchulteGame(container); break;
+                case 'words': initWordsGame(container); break;
+            }
+        }
+
+        function showGameInstructions() {
+            if (!currentGame) return;
+            document.getElementById('instModalTitle').innerText = gameTitles[currentGame];
+            document.getElementById('instModalText').innerText = gameRules[currentGame];
+            openModal('instructionsModal');
+        }
+
+
+        /* ==================== MINI GAME 1: REACTION ==================== */
+        let reactionState = 'idle'; // idle, waiting, ready
+        let reactionStartTime = 0;
+        let reactionTimeout = null;
+
+        function initReactionGame(container) {
+            reactionState = 'idle';
+            container.innerHTML = `
+                <div id="reactionArea" onclick="handleReactionTap()" class="w-full h-80 rounded-3xl glass-card flex flex-col items-center justify-center cursor-pointer p-6 text-center transition-all duration-300 border-2 border-slate-700 shadow-2xl">
+                    <i id="reactionIcon" class="fa-solid fa-hand-pointer text-5xl text-purple-400 mb-4"></i>
+                    <h3 id="reactionText" class="text-xl font-black text-white">Нажми, чтобы начать</h3>
+                    <p id="reactionSubtext" class="text-xs text-gray-400 mt-2">Жди, пока экран станет зеленым</p>
+                </div>
+            `;
+        }
+
+        function handleReactionTap() {
+            const area = document.getElementById('reactionArea');
+            const text = document.getElementById('reactionText');
+            const subtext = document.getElementById('reactionSubtext');
+            const icon = document.getElementById('reactionIcon');
+
+            if (reactionState === 'idle') {
+                reactionState = 'waiting';
+                area.className = "w-full h-80 rounded-3xl bg-red-600/90 flex flex-col items-center justify-center cursor-pointer p-6 text-center transition-all duration-300 border-2 border-red-400 shadow-2xl";
+                icon.className = "fa-solid fa-hourglass-half text-5xl text-white animate-spin mb-4";
+                text.innerText = "ЖДИ ЗЕЛЕНОГО...";
+                subtext.innerText = "Не нажимай раньше времени!";
+                playSound('beep');
+
+                const randomDelay = Math.floor(Math.random() * 3000) + 2000;
+                reactionTimeout = setTimeout(() => {
+                    if (reactionState === 'waiting') {
+                        reactionState = 'ready';
+                        reactionStartTime = Date.now();
+                        area.className = "w-full h-80 rounded-3xl bg-emerald-500 flex flex-col items-center justify-center cursor-pointer p-6 text-center transition-all duration-100 border-2 border-emerald-300 shadow-2xl glow-effect";
+                        icon.className = "fa-solid fa-bolt text-6xl text-white mb-4 animate-bounce";
+                        text.innerText = "НАЖИМАЙ СЕЙЧАС!";
+                        subtext.innerText = "Жми скорее на экран!";
+                        playSound('correct');
+                    }
+                }, randomDelay);
+
+            } else if (reactionState === 'waiting') {
+                clearTimeout(reactionTimeout);
+                reactionState = 'idle';
+                playSound('wrong');
+                area.className = "w-full h-80 rounded-3xl bg-amber-600/90 flex flex-col items-center justify-center cursor-pointer p-6 text-center transition-all duration-300 border-2 border-amber-400 shadow-2xl";
+                icon.className = "fa-solid fa-triangle-exclamation text-5xl text-white mb-4";
+                text.innerText = "Слишком рано!";
+                subtext.innerText = "Нажми, чтобы попробовать снова.";
+
+            } else if (reactionState === 'ready') {
+                const reactionTime = Date.now() - reactionStartTime;
+                reactionState = 'idle';
+                playSound('win');
+
+                if (!scores.reaction || reactionTime < scores.reaction) {
+                    scores.reaction = reactionTime;
+                    localStorage.setItem('brain_reaction', reactionTime);
+                }
+
+                area.className = "w-full h-80 rounded-3xl glass-card flex flex-col items-center justify-center cursor-pointer p-6 text-center transition-all duration-300 border-2 border-cyan-500 shadow-2xl";
+                icon.className = "fa-solid fa-trophy text-5xl text-yellow-400 mb-4";
+                text.innerText = `${reactionTime} мс`;
+                subtext.innerText = `Рекорд: ${scores.reaction} мс. Нажми для повтора.`;
+            }
+        }
+
+
+        /* ==================== MINI GAME 2: SIMON SEQUENCE ==================== */
+        let simonSequence = [];
+        let simonPlayerStep = 0;
+        let isSimonPlaying = false;
+
+        function initSimonGame(container) {
+            simonSequence = [];
+            simonPlayerStep = 0;
+            isSimonPlaying = false;
+
+            container.innerHTML = `
+                <div class="w-full flex flex-col items-center space-y-6">
+                    <div id="simonStatus" class="text-sm font-bold text-gray-300 bg-slate-800/80 px-4 py-2 rounded-full border border-slate-700">
+                        Нажми «Старт» для начала
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 w-64 h-64">
+                        <button onclick="handleSimonClick(0)" id="simon-0" class="rounded-3xl bg-red-500/70 border-4 border-red-400/40 opacity-70 transition-all active:scale-95 shadow-lg h-28"></button>
+                        <button onclick="handleSimonClick(1)" id="simon-1" class="rounded-3xl bg-blue-500/70 border-4 border-blue-400/40 opacity-70 transition-all active:scale-95 shadow-lg h-28"></button>
+                        <button onclick="handleSimonClick(2)" id="simon-2" class="rounded-3xl bg-emerald-500/70 border-4 border-emerald-400/40 opacity-70 transition-all active:scale-95 shadow-lg h-28"></button>
+                        <button onclick="handleSimonClick(3)" id="simon-3" class="rounded-3xl bg-yellow-500/70 border-4 border-yellow-400/40 opacity-70 transition-all active:scale-95 shadow-lg h-28"></button>
+                    </div>
+
+                    <button onclick="startSimonRound()" id="simonStartBtn" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 font-extrabold text-white rounded-2xl btn-bounce shadow-xl text-sm">
+                        Старт
+                    </button>
+                </div>
+            `;
+        }
+
+        function startSimonRound() {
+            simonSequence = [];
+            nextSimonStep();
+            document.getElementById('simonStartBtn').classList.add('hidden');
+        }
+
+        function nextSimonStep() {
+            simonPlayerStep = 0;
+            simonSequence.push(Math.floor(Math.random() * 4));
+            document.getElementById('simonStatus').innerText = `Уровень: ${simonSequence.length}`;
+            playSimonSequence();
+        }
+
+        function playSimonSequence() {
+            isSimonPlaying = true;
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i >= simonSequence.length) {
+                    clearInterval(interval);
+                    isSimonPlaying = false;
+                    document.getElementById('simonStatus').innerText = "Твой черед!";
+                    return;
+                }
+                flashSimonPad(simonSequence[i]);
+                i++;
+            }, 700);
+        }
+
+        function flashSimonPad(id) {
+            const pad = document.getElementById(`simon-${id}`);
+            if (!pad) return;
+            pad.classList.remove('opacity-70');
+            pad.classList.add('opacity-100', 'scale-105', 'brightness-150', 'shadow-2xl');
+            playSound('beep');
+
+            setTimeout(() => {
+                pad.classList.add('opacity-70');
+                pad.classList.remove('opacity-100', 'scale-105', 'brightness-150', 'shadow-2xl');
+            }, 350);
+        }
+
+        function handleSimonClick(padId) {
+            if (isSimonPlaying || simonSequence.length === 0) return;
+
+            flashSimonPad(padId);
+
+            if (padId === simonSequence[simonPlayerStep]) {
+                simonPlayerStep++;
+                if (simonPlayerStep === simonSequence.length) {
+                    playSound('correct');
+                    const currentScore = simonSequence.length;
+                    if (currentScore > scores.simon) {
+                        scores.simon = currentScore;
+                        localStorage.setItem('brain_simon', currentScore);
+                    }
+                    setTimeout(nextSimonStep, 1000);
+                }
+            } else {
+                playSound('wrong');
+                document.getElementById('simonStatus').innerText = `Ошибка! Результат: ${simonSequence.length - 1}`;
+                simonSequence = [];
+                document.getElementById('simonStartBtn').innerText = "Попробовать снова";
+                document.getElementById('simonStartBtn').classList.remove('hidden');
+            }
+        }
+
+
+        /* ==================== MINI GAME 3: MEMORY MATCH ==================== */
+        let matchCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let matchStartTime = 0;
+        let activeTimer = null;
+
+        function initMatchGame(container) {
+            const icons = ['fa-brain', 'fa-bolt', 'fa-heart', 'fa-star', 'fa-gem', 'fa-fire'];
+            const deck = [...icons, ...icons].sort(() => Math.random() - 0.5);
+
+            matchedPairs = 0;
+            flippedCards = [];
+            matchStartTime = Date.now();
+
+            container.innerHTML = `
+                <div class="w-full flex flex-col items-center space-y-4">
+                    <div class="flex justify-between w-full max-w-xs px-2 text-xs font-bold text-gray-300">
+                        <span>Пары: <span id="matchCount" class="text-pink-400">0 / 6</span></span>
+                        <span>Время: <span id="matchTimer" class="text-cyan-400">0s</span></span>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3 w-72 h-80">
+                        ${deck.map((icon, idx) => `
+                            <div onclick="flipCard(${idx}, '${icon}')" id="card-${idx}" class="perspective-1000 h-24 cursor-pointer btn-bounce">
+                                <div id="card-inner-${idx}" class="w-full h-full transform-style-3d transition-transform duration-300 relative rounded-2xl">
+                                    <div class="absolute inset-0 bg-slate-800 border-2 border-pink-500/40 rounded-2xl flex items-center justify-center backface-hidden shadow-md">
+                                        <i class="fa-solid fa-question text-pink-400 text-lg"></i>
+                                    </div>
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-pink-600 to-purple-600 rounded-2xl flex items-center justify-center backface-hidden rotate-y-180 shadow-lg">
+                                        <i class="fa-solid ${icon} text-white text-2xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            if (activeTimer) clearInterval(activeTimer);
+            activeTimer = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - matchStartTime) / 1000);
+                const timerElem = document.getElementById('matchTimer');
+                if (timerElem) timerElem.innerText = `${elapsed}s`;
+            }, 1000);
+        }
+
+        function flipCard(idx, icon) {
+            const inner = document.getElementById(`card-inner-${idx}`);
+            if (flippedCards.length >= 2 || inner.classList.contains('rotate-y-180')) return;
+
+            playSound('beep');
+            inner.classList.add('rotate-y-180');
+            flippedCards.push({ idx, icon });
+
+            if (flippedCards.length === 2) {
+                if (flippedCards[0].icon === flippedCards[1].icon) {
+                    playSound('correct');
+                    matchedPairs++;
+                    document.getElementById('matchCount').innerText = `${matchedPairs} / 6`;
+                    flippedCards = [];
+
+                    if (matchedPairs === 6) {
+                        clearInterval(activeTimer);
+                        const finalTime = Math.floor((Date.now() - matchStartTime) / 1000);
+                        playSound('win');
+
+                        if (!scores.match || finalTime < scores.match) {
+                            scores.match = finalTime;
+                            localStorage.setItem('brain_match', finalTime);
+                        }
+
+                        setTimeout(() => {
+                            alert(`Победа! Все пары найдены за ${finalTime} сек!`);
+                            showMainMenu();
+                        }, 400);
+                    }
+                } else {
+                    playSound('wrong');
+                    setTimeout(() => {
+                        document.getElementById(`card-inner-${flippedCards[0].idx}`).classList.remove('rotate-y-180');
+                        document.getElementById(`card-inner-${flippedCards[1].idx}`).classList.remove('rotate-y-180');
+                        flippedCards = [];
+                    }, 800);
+                }
+            }
+        }
+
+
+        /* ==================== MINI GAME 4: MATH CHALLENGE ==================== */
+        let mathScore = 0;
+        let mathTimeLeft = 20;
+        let currentCorrectAnswer = 0;
+
+        function initMathGame(container) {
+            mathScore = 0;
+            mathTimeLeft = 20;
+
+            container.innerHTML = `
+                <div class="w-full max-w-xs flex flex-col items-center space-y-5">
+                    <div class="flex justify-between w-full text-xs font-bold text-gray-300">
+                        <span>Очки: <span id="mathScore" class="text-amber-400">0</span></span>
+                        <span>Время: <span id="mathTimer" class="text-red-400">20s</span></span>
+                    </div>
+
+                    <div id="mathProblem" class="w-full h-28 glass-card rounded-3xl flex items-center justify-center text-3xl font-black text-white border-2 border-amber-500/40 shadow-xl">
+                        12 + 8
+                    </div>
+
+                    <div id="mathAnswers" class="grid grid-cols-2 gap-3 w-full">
+                        <!-- 4 options injected -->
+                    </div>
+                </div>
+            `;
+
+            generateMathProblem();
+
+            if (activeTimer) clearInterval(activeTimer);
+            activeTimer = setInterval(() => {
+                mathTimeLeft--;
+                const timerElem = document.getElementById('mathTimer');
+                if (timerElem) timerElem.innerText = `${mathTimeLeft}s`;
+
+                if (mathTimeLeft <= 0) {
+                    clearInterval(activeTimer);
+                    playSound('wrong');
+                    if (mathScore > scores.math) {
+                        scores.math = mathScore;
+                        localStorage.setItem('brain_math', mathScore);
+                    }
+                    alert(`Время вышло! Ваш результат: ${mathScore}`);
+                    showMainMenu();
+                }
+            }, 1000);
+        }
+
+        function generateMathProblem() {
+            const ops = ['+', '-', '*'];
+            const op = ops[Math.floor(Math.random() * ops.length)];
+            let n1, n2;
+
+            if (op === '+') {
+                n1 = Math.floor(Math.random() * 50) + 1;
+                n2 = Math.floor(Math.random() * 50) + 1;
+                currentCorrectAnswer = n1 + n2;
+            } else if (op === '-') {
+                n1 = Math.floor(Math.random() * 50) + 20;
+                n2 = Math.floor(Math.random() * n1);
+                currentCorrectAnswer = n1 - n2;
+            } else {
+                n1 = Math.floor(Math.random() * 12) + 2;
+                n2 = Math.floor(Math.random() * 10) + 2;
+                currentCorrectAnswer = n1 * n2;
+            }
+
+            document.getElementById('mathProblem').innerText = `${n1} ${op} ${n2}`;
+
+            // Options generator
+            let options = [currentCorrectAnswer];
+            while (options.length < 4) {
+                let offset = (Math.random() < 0.5 ? 1 : -1) * (Math.floor(Math.random() * 8) + 1);
+                let wrong = currentCorrectAnswer + offset;
+                if (wrong >= 0 && !options.includes(wrong)) {
+                    options.push(wrong);
+                }
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const answersContainer = document.getElementById('mathAnswers');
+            answersContainer.innerHTML = options.map(opt => `
+                <button onclick="checkMathAnswer(${opt})" class="h-16 glass-card rounded-2xl font-black text-xl text-white border border-slate-700 active:scale-95 btn-bounce hover:border-amber-400">
+                    ${opt}
+                </button>
+            `).join('');
+        }
+
+        function checkMathAnswer(ans) {
+            if (ans === currentCorrectAnswer) {
+                playSound('correct');
+                mathScore++;
+                document.getElementById('mathScore').innerText = mathScore;
+                generateMathProblem();
+            } else {
+                playSound('wrong');
+                mathTimeLeft = Math.max(0, mathTimeLeft - 3); // Penalty
+                generateMathProblem();
+            }
+        }
+
+
+        /* ==================== MINI GAME 5: SCHULTE TABLE ==================== */
+        let schulteNextNum = 1;
+        let schulteStartTime = 0;
+
+        function initSchulteGame(container) {
+            schulteNextNum = 1;
+            schulteStartTime = Date.now();
+
+            const numbers = Array.from({length: 25}, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+
+            container.innerHTML = `
+                <div class="w-full max-w-xs flex flex-col items-center space-y-4">
+                    <div class="flex justify-between w-full text-xs font-bold text-gray-300">
+                        <span>Ищите число: <span id="schulteTarget" class="text-cyan-400 text-base">1</span></span>
+                        <span>Время: <span id="schulteTimer" class="text-amber-400">0.0s</span></span>
+                    </div>
+
+                    <div class="grid grid-cols-5 gap-2 w-72 h-72">
+                        ${numbers.map(num => `
+                            <button onclick="clickSchulteNum(${num}, this)" class="glass-card rounded-xl font-black text-lg text-white border border-slate-700/60 active:scale-90 transition-transform flex items-center justify-center shadow-md">
+                                ${num}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            if (activeTimer) clearInterval(activeTimer);
+            activeTimer = setInterval(() => {
+                const elapsed = ((Date.now() - schulteStartTime) / 1000).toFixed(1);
+                const timerElem = document.getElementById('schulteTimer');
+                if (timerElem) timerElem.innerText = `${elapsed}s`;
+            }, 100);
+        }
+
+        function clickSchulteNum(num, btn) {
+            if (num === schulteNextNum) {
+                playSound('beep');
+                btn.classList.add('opacity-30', 'pointer-events-none', 'bg-cyan-900/50');
+                schulteNextNum++;
+
+                if (schulteNextNum > 25) {
+                    clearInterval(activeTimer);
+                    const finalTime = parseFloat(((Date.now() - schulteStartTime) / 1000).toFixed(1));
+                    playSound('win');
+
+                    if (!scores.schulte || finalTime < scores.schulte) {
+                        scores.schulte = finalTime;
+                        localStorage.setItem('brain_schulte', finalTime);
+                    }
+
+                    setTimeout(() => {
+                        alert(`Отлично! Таблица пройдена за ${finalTime} сек!`);
+                        showMainMenu();
+                    }, 300);
+                } else {
+                    document.getElementById('schulteTarget').innerText = schulteNextNum;
+                }
+            } else {
+                playSound('wrong');
+            }
+        }
+
+
+        /* ==================== MINI GAME 6: WORD MEMORY ==================== */
+        const wordPool = [
+            "Яблоко", "Космос", "Собака", "Планета", "Книга", "Музыка", 
+            "Океан", "Звезда", "Солнце", "Телефон", "Машина", "Радуга",
+            "Замок", "Остров", "Воздух", "Цветок", "Время", "Золото"
+        ];
+        let targetWords = [];
+        let selectedWords = [];
+
+        function initWordsGame(container) {
+            targetWords = [...wordPool].sort(() => Math.random() - 0.5).slice(0, 5);
+            selectedWords = [];
+
+            container.innerHTML = `
+                <div class="w-full max-w-xs flex flex-col items-center space-y-5">
+                    <div id="wordInstruction" class="text-center">
+                        <h3 class="text-base font-extrabold text-white">Запомните слова</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">Исчезнут через <span id="wordTimer" class="text-indigo-400 font-bold">7</span> сек</p>
+                    </div>
+
+                    <div id="wordDisplayArea" class="w-full p-4 glass-card rounded-3xl flex flex-wrap gap-2 justify-center items-center min-h-[140px] border-2 border-indigo-500/40 shadow-xl">
+                        ${targetWords.map(w => `<span class="px-3 py-1.5 bg-indigo-600/40 border border-indigo-400/50 rounded-xl text-sm font-bold text-white shadow-sm">${w}</span>`).join('')}
+                    </div>
+
+                    <div id="wordSelectionGrid" class="hidden grid grid-cols-2 gap-2.5 w-full">
+                        <!-- Options injected later -->
+                    </div>
+
+                    <button id="submitWordsBtn" onclick="checkWordMemory()" class="hidden w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-extrabold rounded-2xl btn-bounce shadow-lg text-sm">
+                        Готово
+                    </button>
+                </div>
+            `;
+
+            let countdown = 7;
+            if (activeTimer) clearInterval(activeTimer);
+            activeTimer = setInterval(() => {
+                countdown--;
+                const timerElem = document.getElementById('wordTimer');
+                if (timerElem) timerElem.innerText = countdown;
+
+                if (countdown <= 0) {
+                    clearInterval(activeTimer);
+                    startWordRecallPhase();
+                }
+            }, 1000);
+        }
+
+        function startWordRecallPhase() {
+            playSound('beep');
+            document.getElementById('wordInstruction').innerHTML = `
+                <h3 class="text-base font-extrabold text-white">Выберите 5 запомненных слов</h3>
+                <p class="text-xs text-gray-400 mt-0.5">Отметьте слова, которые были на экране</p>
+            `;
+            document.getElementById('wordDisplayArea').classList.add('hidden');
+
+            // Generate options (5 correct + 5 distractors)
+            const distractors = wordPool.filter(w => !targetWords.includes(w)).sort(() => Math.random() - 0.5).slice(0, 5);
+            const options = [...targetWords, ...distractors].sort(() => Math.random() - 0.5);
+
+            const grid = document.getElementById('wordSelectionGrid');
+            grid.classList.remove('hidden');
+            grid.innerHTML = options.map(w => `
+                <button onclick="toggleSelectWord('${w}', this)" class="p-3 glass-card rounded-2xl font-bold text-xs text-gray-200 border border-slate-700/80 active:scale-95 btn-bounce">
+                    ${w}
+                </button>
+            `).join('');
+
+            document.getElementById('submitWordsBtn').classList.remove('hidden');
+        }
+
+        function toggleSelectWord(word, btn) {
+            playSound('beep');
+            if (selectedWords.includes(word)) {
+                selectedWords = selectedWords.filter(w => w !== word);
+                btn.classList.remove('border-indigo-400', 'bg-indigo-600/50', 'text-white');
+                btn.classList.add('border-slate-700/80', 'text-gray-200');
+            } else {
+                if (selectedWords.length >= 5) return;
+                selectedWords.push(word);
+                btn.classList.add('border-indigo-400', 'bg-indigo-600/50', 'text-white');
+                btn.classList.remove('border-slate-700/80', 'text-gray-200');
+            }
+        }
+
+        function checkWordMemory() {
+            let correctCount = 0;
+            selectedWords.forEach(w => {
+                if (targetWords.includes(w)) correctCount++;
+            });
+
+            if (correctCount === 5 && selectedWords.length === 5) {
+                playSound('win');
+            } else if (correctCount >= 3) {
+                playSound('correct');
+            } else {
+                playSound('wrong');
+            }
+
+            if (correctCount > scores.words) {
+                scores.words = correctCount;
+                localStorage.setItem('brain_words', correctCount);
+            }
+
+            alert(`Результат: угадано ${correctCount} из 5 слов!`);
+            showMainMenu();
+        }
+
+    </script>
+</body>
+</html>
